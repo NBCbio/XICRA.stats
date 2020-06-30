@@ -1,3 +1,6 @@
+library(dplyr)
+library(tidyr)
+
 #' Read isomiR data
 #'
 #' This function allows to read given file produced by XICRA pipeline

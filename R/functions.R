@@ -52,3 +52,17 @@ prepare_counts_by_variant <- function(dataGiven) {
   count_data_summary <- count_data %>% dplyr::group_by(parent, variant) %>% dplyr::summarise_if(is.numeric, sum) %>% as.data.frame()
   return(count_data_summary)
 }
+
+#' Summarize counts by miRNA & variant
+#'
+#' This functions prepares countsfile for DESeq discarding rows with
+#' many 0 for all samples.
+#' @param dataframe obtain from XICRA.stats::prepare_data or XICRA.stats::prepare_counts_by_variant or XICRA.stats::prepare_counts_by_miRNA
+#' @keywords XICRA
+#' @export
+discard_0_counts <- function(countsF) {
+  row.0 <- rowSums(countsF==0) # for each gene, number of samples with 0 counts
+  row.0_10 <- row.0[row.0 <= 0.9 * ncol(countsF) ]
+  countsFile2 <-countsF[names(row.0_10),]
+  return(countsFile2)
+}

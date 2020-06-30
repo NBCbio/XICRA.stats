@@ -1,6 +1,6 @@
 Package: XICRA.stats
 Title: Parses and creates statistics for XICRA analysis
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     person(given = "Jose Francisco",
            family = "Sanchez-Herrero",

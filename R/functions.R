@@ -13,11 +13,16 @@ prepare_data <- function(file_given) {
   ### split isomiR_ID into for more information
   ### e.g. hsa-let-7a-3p&iso_3p:+1&rNsrq0Ov2 hsa-let-7a-3p iso_3p:+1 rNsrq0Ov2
   read_table_given <- tidyr::separate(read_table_given, ID, c('parent', 'variant', 'UID'), sep = '&', remove=FALSE)
-
-  ## replace na variants
+  
+  ## replace na variants string
   read_table_given$variant <- as.character(read_table_given$variant)
   read_table_given$variant[read_table_given$variant == "NA"] <- "Canonical"
 
+  ## create variants type
+  read_table_given <- tidyr::separate(read_table_given, variant, c('type', 'int'), sep = ':', remove=FALSE)
+  read_table_given['int'] <- NULL
+  read_table_given$type <- as.character(read_table_given$type)
+  
   ### replace na
   read_table_given[is.na(read_table_given)] <- 0
 

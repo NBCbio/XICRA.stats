@@ -76,7 +76,7 @@ prepare_counts_by_variant <- function(dataGiven) {
 #' @export
 parse_XICRA <- function(XICRA_csv_file) {
   ## isomiR data
-  isomir_data <- prepare_data(XICRA_csv_file)
+  isomir_data <- prepare_data(XICRA_csv_file, "XICRA")
   
   ## miRNA and variant data
   miRNA_data <- prepare_counts_by_miRNA(isomir_data)

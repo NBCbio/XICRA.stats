@@ -144,6 +144,10 @@ build_geneSet_collection_DESeq2 <- function(data_df_given, name, path2store_resu
                                 "n.unique"=length(unique(subset.i$UID)),
                                 "percent.diversity"=percent(length(unique(subset.i$UID))/length(unique(data_df_given$UID)),accuracy=0.01))
     geneSet_stats<-bind_rows(geneSet_stats,geneSet_stats.i)
+    
+    rownames(geneSet_stats) <- geneSet_stats$class
+    geneSet_stats <- geneSet_stats[order(geneSet_stats$average.read.counts, decreasing = TRUE ),]
+    return (geneSet_stats)
   }
   
   print ("+ Stats generated")

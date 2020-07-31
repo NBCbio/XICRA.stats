@@ -108,12 +108,43 @@ parse_XICRA <- function(XICRA_csv_file) {
   return (my_data)
 }
 
+#' Create statistics and gene sets for isomiR and miRNA from XICRA simulations
+#'
+#' This function allows to parse given dataframe produced XICRA simulations results
+#' and generates statistics according to type of isomiR
+#' @param data_df_given Dataframe from XICRA::prepare_data containing type, UID, parent column
+#' @keywords XICRA
+#' @export
+
+create_geneSet_stats_simulations <- function(data_df){
+  ## create list from colum type
+  geneset.list<-unique(data_df$type)
+  
+  #stats for data_df_given
+  geneSet_stats<-data.frame(A=character(),B=numeric(),C=character(),D=integer(),E=character())
+  colnames(geneSet_stats)<-c("class","average.read.counts","percent.avg.read.counts",
+                             "n.unique","percent.diversity")
+  geneSet_stats<-dplyr::slice(geneSet_stats,0)
+  for (i in 1:length(geneset.list)){
+    subset.i<-filter(data_df,type==geneset.list[i])
+    geneSet_stats.i<-data.frame("class"=geneset.list[i],
+                                "average.read.counts"=sum(subset.i$obs),
+                                "percent.avg.read.counts"=percent((sum(subset.i$obs)/sum(data_df$obs)), accuracy=0.01),
+                                "n.unique"=length(unique(subset.i$sequence)),
+                                "percent.diversity"=percent(length(unique(subset.i$sequence))/length(unique(data_df$sequence)),accuracy=0.01))
+    geneSet_stats<-bind_rows(geneSet_stats,geneSet_stats.i)
+  }
+  
+  rownames(geneSet_stats) <- geneSet_stats$class
+  geneSet_stats <- geneSet_stats[order(geneSet_stats$average.read.counts, decreasing = TRUE ),]
+  return (geneSet_stats)
+}
+
 #' Create statistics and gene sets for isomiR and miRNA from XICRA data analyzed with DESeq2
 #'
 #' This function allows to parse given dataframe produced by DESeq2 from XICRA results
 #' and generates statistics according to type of isomiR and genes sets in gmt format for
 #' overrepresentation analysis
-
 #' @param data_df_given Dataframe from XICRA::prepare_data containing type, UID, parent column
 #' @param name tag for store results
 #' @param path2store_results absolute path to store results produce
@@ -143,10 +174,10 @@ build_geneSet_collection_DESeq2 <- function(data_df_given, name, path2store_resu
                                 "n.unique"=length(unique(subset.i$UID)),
                                 "percent.diversity"=percent(length(unique(subset.i$UID))/length(unique(data_df_given$UID)),accuracy=0.01))
     geneSet_stats<-bind_rows(geneSet_stats,geneSet_stats.i)
-    
-    rownames(geneSet_stats) <- geneSet_stats$class
-    geneSet_stats <- geneSet_stats[order(geneSet_stats$average.read.counts, decreasing = TRUE ),]
   }
+  
+  rownames(geneSet_stats) <- geneSet_stats$class
+  geneSet_stats <- geneSet_stats[order(geneSet_stats$average.read.counts, decreasing = TRUE ),]  
   
   print ("+ Stats generated")
   print (head(geneSet_stats))

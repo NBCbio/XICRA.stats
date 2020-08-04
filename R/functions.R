@@ -10,6 +10,9 @@
 #' @keywords XICRA
 #' @export
 prepare_data <- function(file_given, type_data) {
+  require(dplyr)
+  require(tidyr)
+  
   ## Read table, split ID_given and fill_NA  #####
   if (type_data == 'XICRA') {
     ## Data
@@ -47,6 +50,9 @@ prepare_data <- function(file_given, type_data) {
 #' @keywords XICRA
 #' @export
 prepare_counts_by_miRNA <- function(dataGiven){
+  require(dplyr)
+  require(tidyr)
+  
   cols.dont.want <- c("ID", "variant", "UID") # if you want to remove multiple columns
   count_data <-dataGiven[, ! names(dataGiven) %in% cols.dont.want, drop = F]
   count_data_summary <- count_data %>% dplyr::group_by(parent) %>% dplyr::summarise_if(is.numeric, sum) %>% as.data.frame()
@@ -60,6 +66,9 @@ prepare_counts_by_miRNA <- function(dataGiven){
 #' @keywords XICRA
 #' @export
 prepare_counts_by_variant <- function(dataGiven) {
+  require(dplyr)
+  require(tidyr)
+  
   cols.dont.want <- c("ID", "UID") # if you want to remove multiple columns
   count_data <-dataGiven[, ! names(dataGiven) %in% cols.dont.want, drop = F]
   count_data_summary <- count_data %>% dplyr::group_by(parent, variant) %>% dplyr::summarise_if(is.numeric, sum) %>% as.data.frame()
@@ -75,6 +84,9 @@ prepare_counts_by_variant <- function(dataGiven) {
 #' @keywords XICRA
 #' @export
 parse_XICRA <- function(XICRA_csv_file) {
+  require(dplyr)
+  require(tidyr)
+  
   ## isomiR data
   isomir_data <- prepare_data(XICRA_csv_file, "XICRA")
   
@@ -117,6 +129,8 @@ parse_XICRA <- function(XICRA_csv_file) {
 #' @export
 
 create_geneSet_stats_simulations <- function(data_df){
+  require(scales)
+  
   ## create list from colum type
   geneset.list<-unique(data_df$type)
   

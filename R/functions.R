@@ -10,7 +10,6 @@
 #' @keywords XICRA
 #' @export
 prepare_data <- function(file_given, type_data) {
-  library(dplyr)
   library(tidyr)
   
   ## Read table, split ID_given and fill_NA  #####
@@ -50,7 +49,6 @@ prepare_data <- function(file_given, type_data) {
 #' @keywords XICRA
 #' @export
 prepare_counts_by_miRNA <- function(dataGiven){
-  library(dplyr)
   library(tidyr)
   
   cols.dont.want <- c("ID", "variant", "UID") # if you want to remove multiple columns
@@ -66,7 +64,6 @@ prepare_counts_by_miRNA <- function(dataGiven){
 #' @keywords XICRA
 #' @export
 prepare_counts_by_variant <- function(dataGiven) {
-  library(dplyr)
   library(tidyr)
   
   cols.dont.want <- c("ID", "UID") # if you want to remove multiple columns
@@ -84,7 +81,6 @@ prepare_counts_by_variant <- function(dataGiven) {
 #' @keywords XICRA
 #' @export
 parse_XICRA <- function(XICRA_csv_file) {
-  library(dplyr)
   library(tidyr)
   
   ## isomiR data
@@ -138,7 +134,7 @@ create_geneSet_stats_simulations <- function(data_df){
   geneSet_stats<-data.frame(A=character(),B=numeric(),C=character(),D=integer(),E=character())
   colnames(geneSet_stats)<-c("class","average.read.counts","percent.avg.read.counts",
                              "n.unique","percent.diversity")
-  geneSet_stats<-dplyr::slice(geneSet_stats,0)
+  geneSet_stats<- dplyr::slice(geneSet_stats,0)
   for (i in 1:length(geneset.list)){
     subset.i<-filter(data_df,type==geneset.list[i])
     geneSet_stats.i<-data.frame("class"=geneset.list[i],

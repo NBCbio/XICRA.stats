@@ -2,7 +2,9 @@
 
 export(build_geneSet_collection_DESeq2)
 export(create_geneSet_stats_simulations)
+export(get_data)
 export(parse_XICRA)
+export(plot_biotypes)
 export(prepare_counts_by_miRNA)
 export(prepare_counts_by_variant)
 export(prepare_data)

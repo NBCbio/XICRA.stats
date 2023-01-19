@@ -9,13 +9,13 @@
 #' @param type_data string (DESeq2 or XICRA)
 #' @keywords XICRA
 #' @export
-prepare_data <- function(file_given, type_data) {
+prepare_data <- function(file_given, type_data, checkNames=TRUE) {
   library(tidyr)
   
   ## Read table, split ID_given and fill_NA  #####
   if (type_data == 'XICRA') {
     ## Data
-    read_table_given <- read.csv(file = file_given, header=TRUE)
+    read_table_given <- read.csv(file = file_given, header=TRUE, check.names = checkNames)
     
     ### split isomiR_ID into for more information
     ### e.g. hsa-let-7a-3p&iso_3p:+1&rNsrq0Ov2 hsa-let-7a-3p iso_3p:+1 rNsrq0Ov2
@@ -23,7 +23,7 @@ prepare_data <- function(file_given, type_data) {
   } 
   if (type_data == 'DESeq2') {
     ## Data
-    read_table_given <- read.csv(file = file_given, header=TRUE, sep="\t")
+    read_table_given <- read.csv(file = file_given, header=TRUE, sep="\t", check.names = checkNames)
     
     ### split isomiR_ID into for more information
     ### e.g. hsa-let-7a-3p&iso_3p:+1&rNsrq0Ov2 hsa-let-7a-3p iso_3p:+1 rNsrq0Ov2

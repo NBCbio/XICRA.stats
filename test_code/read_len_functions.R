@@ -1,10 +1,13 @@
-file1 <- "/home/jfsanchez/DATA/XICRA/test_read_len/seqs_test"
-file2 <- "/home/jfsanchez/DATA/XICRA/test_read_len/all_seqs.freqs.subset_isomiRs.fasta"
+sessionInfo()
+
+
+file1 <- "./seqs_test"
+file2 <- "./seqs_test.fasta"
 
 ?readDNAStringSet
 
 ## dataframe
-# index, seq, len, name, biotype, group, count
+# index, len, biotype, group, count, [name, seq]
 
 ## migth be able to plot according to colour extracted from header
 
@@ -66,13 +69,23 @@ dim(seqs_df_filtered)
 ############################
 
 ############################
+## just data in tab format
+file3 <- "/imppc/labs/lslab/jsanchez/DATA/XICRA/test_RNAbiotype/test_sample.length.results.txt"
+data3 <- read.table(file3, sep="\t")
+data3
+
+############################
 ## plot
 ############################
 # base R
 hist(seqs_df$len)
 
 # ggplot
+
+install.packages("ggplot2")
+
 library(ggplot2)
+
 ggplot(seqs_df, mapping = aes(len)) + geom_bar()
 ggplot(seqs_df_filtered, mapping = aes(x=len)) + geom_bar() ## unique
 
@@ -130,8 +143,6 @@ ggplot(seqs_df6_filtered, mapping = aes(x=len, y=count, fill=group, colour=group
   theme_classic() #+ facet_grid(group ~ .)
 
 
-  
-
 
 p1 <- seqs_df6_filtered %>>% ggplot() +  
   geom_bar(mapping = aes(x=len, y=count, fill=group), stat="identity") + 
@@ -142,4 +153,59 @@ p1
 
 labs(title = "Frequency by sequence length\n", x = "\nLength (bp)", y = "Frequency\n") +
   theme_classic() #+ facet_grid(group ~ .)
+############################
+
+
+############################
+## just data in tab format
+file3 <- "/imppc/labs/lslab/jsanchez/DATA/XICRA/test_RNAbiotype/test_sample.length.results.txt"
+data3 <- read.table(file3, sep="\t", header = TRUE)
+dim(data3)
+
+table(data3$biotype)
+hist(data3$length)
+data4 <- head(data3)
+
+# ggplot
+library(ggplot2, lib.loc = "/soft/general/R-3.6.3-bioc-3.10/lib/R/library/")
+
+colnames(data3)
+
+ggplot(data3, mapping = aes(x=length)) + geom_bar() ## unique
+
+ggplot(data3, mapping = aes(x=length, y=count)) + geom_bar(stat="identity") + ## all
+  labs(title = "Frequency by isomiR length\n", x = "\nLength (bp)", y = "Frequency\n") +
+  theme_classic()
+
+ggplot(data3, mapping = aes(x=length, y=count, fill=biotype)) + geom_bar(stat="identity") + ## all
+  labs(title = "Frequency by isomiR length\n", x = "\nLength (bp)", y = "Frequency\n") +
+  theme_classic() + facet_grid(biotype ~ .)
+
+# ---------------------------------------------------------------------------------
+## summarize
+# ---------------------------------------------------------------------------------
+
+biotypes <- data.frame(type=data3$biotype,count=data3$count)
+sum.biotypes<- aggregate(biotypes[,2], by=list(biotypes$type), "sum")
+sum.biotypes$Group.1 <- factor(sum.biotypes$Group.1, levels=unique(biotypes$type))
+
+sum.biotypes
+
+## generate percentage
+perc.biotypes<- cbind.data.frame(sum.biotypes$Group.1, 100 * prop.table( as.matrix(sum.biotypes[, 2:ncol(sum.biotypes)]), 2 ) )
+names(perc.biotypes)[1]<- "Biotypes"
+names(perc.biotypes)[2]<- "percentage"
+
+library(dplyr)
+major_categories <- perc.biotypes %>%
+  filter(percentage >= 5) %>%
+  pull("Biotypes")
+
+data3 %>%
+  filter(biotype %in% major_categories) %>%
+  ggplot(mapping = aes(x=length, y=count, fill=biotype)) + geom_bar(stat="identity") + ## all
+    labs(title = "Frequency by Biotype class\n", x = "\nLength (bp)", y = "Frequency\n") +
+    theme_classic() + facet_grid(biotype ~ .)
+
+
 

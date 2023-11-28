@@ -5,14 +5,14 @@
 #' @param data_biotypes Results file from XICRA biotype and/or featurecount + modifications
 #' @keywords XICRA
 #' @export
-get_data <- function(data_biotypes) {
-  library(reshape)
+get_data <- function(data_biotypes, checkNames=TRUE) {
+  library(reshape2)
   library(stringr)
 
   ## read data
   # ---------------------------------------------------------------------------------
   ## miRNAseq
-  biotypes <- read.csv(data_biotypes, sep=",", stringsAsFactors=T, header=T, row.names = 1)
+  biotypes <- read.csv(data_biotypes, sep=",", stringsAsFactors=T, header=T, row.names = 1, check.names = checkNames)
   
   ## remove row
   biotypes.remove <- c("total")

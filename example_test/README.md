@@ -1,29 +1,8 @@
----
-title: "Import XICRA counts"
-output: html_document
-date: "2023-11-28"
----
+## Import XICRA counts
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+# Example to import XICRA data
 
-# R Markdown example to import XICRA data
-
-This is an example in R Markdown format to retrieve and load isomiR counts from XICRA pipeline.
-
-```{r load_modules}
-library(XICRA.stats)
-```
-
-## Get data
-
-```{r, cache=TRUE}
-#############
-## Get data
-#############
-XICRA_csv_file <- "./example_miRNA_files/miRNA_expression-miraligner.csv"
-```
+In the following file `import_example.Rmd` find an example in R Markdown format to retrieve and load isomiR counts from XICRA pipeline. Additionally, find the html version in `import_example.html`.
 
 XICRA creates the count of the reads at the isomiR level. In order to store information, XICRA generates unique entries using the parent miRNA, the variant and UID separated by character `&`.
 
@@ -32,17 +11,31 @@ This information is stored within the report/miRNA/ folder under the XICRA proje
 - `miRNA_expression-miraligner_seq.csv` that contain the UID and the corresponding DNA sequence
 - `miRNA_expression-miraligner_dup.csv` that contain duplicated entries with the same UID.
 
+## Get data
+
+Basically, we will need to load the package `XICRA.stats`
+
+```{r}
+library(XICRA.stats)
+```
+
+```{r}
+#############
+## Get data
+#############
+XICRA_csv_file <- "./example_miRNA_files/miRNA_expression-miraligner.csv"
+```
 ## Get counts at the isomiR level
 
 You can use the function within named `XICRA.stats::prepare_data` that basically uses `tidyr` to split strings by `&`
 
-```{r, cache=TRUE}
+```{r}
 XICRA.stats::prepare_data
 ```
 
 As an example:
 
-```{r, cache=TRUE}
+```{r}
 
 ## XICRA data
 isomir_data <- XICRA.stats::prepare_data(XICRA_csv_file, 'XICRA', checkNames = TRUE)
@@ -57,12 +50,12 @@ row.names(isomir_data) <- isomir_data$ID
 
 In order to do the analysis at the miRNA level, we need to aggregate counts by parent miRNA. We can use the `XICRA.stats::prepare_counts_by_miRNA` that basically uses `dplyr::group_by` and `dplyr::summarize_if` to aggregate accordingly.
 
-```{r, cache=TRUE}
+```{r}
 XICRA.stats::prepare_counts_by_miRNA
 ```
 As an example:
 
-```{r, cache=TRUE}
+```{r}
 ## miRNA and variant data
 miRNA_data <- XICRA.stats::prepare_counts_by_miRNA(isomir_data)
 head(miRNA_data)
@@ -76,12 +69,12 @@ rownames(miRNA_data) <- miRNA_data$parent
 Finally, we can also aggregate counts by variant, using the `XICRA.stats::prepare_counts_by_variant` that again groups and summarises using variant type.
 
 
-```{r, cache=TRUE}
+```{r}
 XICRA.stats::prepare_counts_by_variant
 ```
 
 
-```{r, cache=TRUE}
+```{r}
 miRNA_variant_data <- XICRA.stats::prepare_counts_by_variant(isomir_data)
 head(miRNA_variant_data)
 dim(miRNA_variant_data)
@@ -91,7 +84,7 @@ dim(miRNA_variant_data)
 
 Before finishing we can discard columns that are not counts and will interfere with the analysis
 
-```{r, cache=TRUE}
+```{r}
 miRNA_data$parent <- NULL
 isomir_data$parent <- NULL
 isomir_data$variant <- NULL
@@ -101,7 +94,6 @@ isomir_data$ID <- NULL
 
 We can create a list with the dataframes generated and removed them to increase readability of the code.
 ```{r}
-## return
 my_data <- list("isomir_data" = isomir_data, 
                 "miRNA_data"=miRNA_data, 
                 "miRNA_variant_data" = miRNA_variant_data)

@@ -4,7 +4,7 @@
 \alias{get_data}
 \title{Get data and summarize for main biotypes}
 \usage{
-get_data(data_biotypes)
+get_data(data_biotypes, checkNames = TRUE)
 }
 \arguments{
 \item{data_biotypes}{Results file from XICRA biotype and/or featurecount + modifications}

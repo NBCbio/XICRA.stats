@@ -2,7 +2,8 @@
 
 ## update XICRA.stats package
 library(devtools)
-devtools::install_github("klutometis/roxygen")
+library(roxygen2)
+#devtools::install_github("klutometis/roxygen")
 
 setwd("./")
 getwd()
